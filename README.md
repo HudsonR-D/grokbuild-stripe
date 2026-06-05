@@ -1,67 +1,71 @@
 # grokbuild-stripe
 
-**Stupid-simple Stripe + Grok Build integration**
+**Stupid-simple Stripe MCP connector for xAI Grok Build**
 
-One-command (or near) setup to give Grok Build full access to Stripe via official MCP and best-practice skills.
-
-## Why this exists
-Grok Build is fantastic at building apps, but payments shouldn't be a pain. This repo makes connecting Stripe dead simple so you (or anyone) can tell Grok Build things like:
-
-- "Add Stripe Checkout for one-time payments and subscriptions"
-- "Create a customer portal"
-- "Handle webhook events for successful payments"
+Makes it dead easy for Grok Build to work with Stripe payments (checkout, subscriptions, customers, webhooks, etc.) using Stripe's official MCP server.
 
 ## Quick Start
 
-1. **Install Grok Build** (if not already):
+1. **Install Grok Build** (beta)
    ```bash
    curl -fsSL https://x.ai/cli/install.sh | bash
    ```
 
-2. **Get your Stripe API keys**
-   - Go to [Stripe Dashboard](https://dashboard.stripe.com/apikeys)
-   - Create a **restricted key** (recommended for security) with permissions for:
-     - Customers (read/write)
-     - Products & Prices
-     - Checkout Sessions
-     - Subscriptions
-     - Invoices
-     - Webhooks
-     - etc. (see recommended scopes below)
+2. **Create Restricted Stripe API Key** (critical for security)
+   - Go to [Stripe Dashboard → API keys](https://dashboard.stripe.com/apikeys)
+   - Click **+ Create restricted key**
+   - Select **"Authorizing an AI agent"** (perfect for MCP/Claude/Cursor/Grok Build)
+   - Then configure the following **capabilities** (set to **Write** where needed, **Read** for others, **None** for the rest):
 
-3. **Add Stripe MCP**
-   - In Grok Build, use the `/mcps` command or add to your project's MCP config.
-   - MCP Server URL: `https://mcp.stripe.com`
+     **Recommended minimum set (enable these):**
+     - **Customers** → Write
+     - **Products** → Write
+     - **Prices** → Write
+     - **Checkout Sessions** → Write
+     - **Subscriptions** → Write
+     - **Invoices** → Write
+     - **Payment Intents** → Write
+     - **Webhooks** / **Events** → Read + Write (for webhook endpoints)
+     - **Payment Methods** → Read/Write (as needed)
 
-4. **Add Stripe skills** (optional but recommended):
-   Use Grok Build's skill system or run:
-   ```bash
-   # Example skill add if supported
-   ```
+     Leave everything else on **None** unless your use case requires it (e.g. Payouts, Disputes, etc.).
 
-## Usage Examples
+3. **Add Stripe MCP to Grok Build**
+   - Start Grok Build: `grokbuild` in your project
+   - Use `/mcps` (or the MCP manager command) 
+   - Add server:
+     - **URL**: `https://mcp.stripe.com`
+     - **Key**: Paste your new restricted `sk_test_` or `sk_live_` key
 
-Once configured, in your Grok Build session:
+4. **(Optional) Add Stripe skills**
+   Grok Build may auto-detect or you can add community skills if available.
 
-```bash
-grokbuild "Implement Stripe subscription billing with checkout in this Next.js app"
-```
+## Typical Prompts for Grok Build
 
-Grok Build will use the MCP tools directly to plan and code the integration securely.
+Once connected:
+- `Set up Stripe Checkout for one-time payments and monthly subscriptions`
+- `Implement a customer portal with subscription management`
+- `Add webhook handling for payment succeeded/failed events`
+- `Create a full SaaS billing flow with free trials`
 
-## Recommended Stripe Restricted Key Scopes
+Grok Build will use the MCP tools to generate secure, best-practice code.
 
-List of key capabilities...
+## Security Notes
+- Always use **restricted keys** scoped only to what you need
+- Never commit API keys to Git
+- Use `.env` files or your platform's secret manager
+- Test thoroughly in Stripe test mode first
 
-## Files in this repo
+## What's next in this repo
+- `setup.sh` for automated configuration
+- Example apps (Next.js, etc.)
+- Pre-packaged skills
 
-- `setup.sh` - one-click setup script (coming soon)
-- `examples/` - starter templates
+Pull requests welcome to make setup even easier!
 
-## Contributing
-Pull requests welcome! Especially for better setup automation.
+**Repo**: https://github.com/HudsonR-D/grokbuild-stripe
 
-Made with ❤️ for the Grok Build community by HudsonR&D + Grok.
+Made with ❤️ by HudsonR&D + Grok
 
 ## License
 MIT
